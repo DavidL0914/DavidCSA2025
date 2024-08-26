@@ -56,7 +56,7 @@ The absolutes in setup up...
 
 ```text
 github_repo: "student_2025" 
-baseurl: "/student_2025"
+baseurl: "/DavidCSA2025"
 ```
 
 **Set Repository Name in Makefile**: Adjust the `REPO_NAME` variable in your Makefile to match your GitHub repository's name. This action facilitates the automatic updating of posts and notebooks on your local development server, improving the development process.

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nighthawk Pages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .emoji-suggestions {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            background: white;
+            z-index: 1000;
+            width: calc(100% - 20px); /* Adjust width to fit better */
+            margin-top: 5px; /* Space between input and suggestions */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .emoji-suggestion {
+            padding: 8px;
+            font-size: 1.2em; /* Slightly smaller font size */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .emoji-suggestion:hover {
+            background-color: #f0f0f0;
+        }
+        .emoji-suggestion span {
+            margin-left: 8px;
+        }
+        #emoji_name {
+            font-size: 0.9em; /* Smaller font size */
+            padding: 6px;
+            width: 100%; /* Full width of the container */
+            max-width: 200px; /* Max width for input */
+            box-sizing: border-box; /* Include padding in width */
+        }
+        #emoji_name:focus {
+            outline: none;
+            border-color: #007bff; /* Highlight border color */
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25); /* Focus shadow */
+        }
+        .output-text {
+            font-size: 1.5em; /* Increase font size for better readability */
+            line-height: 1.5; /* Add space between lines */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Nighthawk Pages</h1>
+
+        <form method="post" action="/">
+            <div class="form-group">
+                <label for="option">Select Option:</label>
+                <select name="option" id="option" class="form-control">
+                    <option value="search_wikipedia">Search Wikipedia</option>
+                    <option value="calculate_statistics">Calculate Statistics</option>
+                    <option value="add_emoji">Add Emoji</option>
+                </select>
+            </div>
+            <div class="form-group" id="search_query" style="display:none;">
+                <label for="query">Wikipedia Query:</label>
+                <input type="text" name="query" id="query" class="form-control">
+            </div>
+            <div class="form-group" id="stats_data" style="display:none;">
+                <label for="data">Data (comma-separated):</label>
+                <input type="text" name="data" id="data" class="form-control">
+            </div>
+            <div class="form-group" id="emoji_section" style="display:none;">
+                <label for="text">Text:</label>
+                <input type="text" name="text" id="text" class="form-control">
+                <label for="emoji_name">Emoji Name:</label>
+                <input type="text" name="emoji_name" id="emoji_name" class="form-control" autocomplete="off">
+                <div id="emoji-suggestions" class="emoji-suggestions" style="display:none;"></div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+
+        {% if summary %}
+            <h3 class="mt-4">Wikipedia Summary:</h3>
+            <p>{{ summary }}</p>
+        {% endif %}
+
+        {% if mean is not none %}
+            <h3 class="mt-4">Statistics:</h3>
+            <p><strong>Mean:</strong> {{ mean }}</p>
+            <p><strong>Standard Deviation:</strong> {{ std_dev }}</p>
+        {% endif %}
+
+        {% if enhanced_text %}
+            <h3 class="mt-4">Enhanced Text:</h3>
+            <p class="output-text">{{ enhanced_text | safe }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.getElementById('option').addEventListener('change', function() {
+            var value = this.value;
+            document.getElementById('search_query').style.display = value === 'search_wikipedia' ? 'block' : 'none';
+            document.getElementById('stats_data').style.display = value === 'calculate_statistics' ? 'block' : 'none';
+            document.getElementById('emoji_section').style.display = value === 'add_emoji' ? 'block' : 'none';
+        });
+
+        document.getElementById('emoji_name').addEventListener('input', function() {
+            var input = this.value;
+            if (input.length > 0) {
+                fetch(`/suggest_emojis?emoji_name=${encodeURIComponent(input)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var suggestionsDiv = document.getElementById('emoji-suggestions');
+                        suggestionsDiv.innerHTML = '';
+                        if (data.suggestions.length > 0) {
+                            data.suggestions.forEach(function(suggestion) {
+                                var div = document.createElement('div');
+                                div.className = 'emoji-suggestion';
+                                div.innerHTML = `${suggestion[1]} ${suggestion[0]}`;
+                                div.addEventListener('click', function() {
+                                    document.getElementById('emoji_name').value = suggestion[0]; // Set the name to the input box
+                                    suggestionsDiv.style.display = 'none'; // Hide suggestions
+                                });
+                                suggestionsDiv.appendChild(div);
+                            });
+                            suggestionsDiv.style.display = 'block';
+                        } else {
+                            suggestionsDiv.style.display = 'none';
+                        }
+                    });
+            } else {
+                document.getElementById('emoji-suggestions').style.display = 'none';
+            }
+        });
+        
+
+        // Disable text input history
+        document.getElementById('text').setAttribute('autocomplete', 'off');
+        document.getElementById('emoji_name').setAttribute('autocomplete', 'off');
+    </script>
+</body>
+</html>
