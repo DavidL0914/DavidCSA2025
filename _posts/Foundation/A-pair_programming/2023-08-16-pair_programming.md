@@ -8,6 +8,7 @@ type: collab
 menu: nav/pair_programming.html
 permalink: /pair/programming
 toc: true
+hide: true
 ---
 
 ## "Real World" Projects
