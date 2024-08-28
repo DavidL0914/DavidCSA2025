@@ -23,9 +23,13 @@ From an early age, I found joy in solving problems and creating new things throu
 
 Volleyball has been a significant part of my life. I've been playing with our school's team since freshman year and am playing on the varsity team this year. Whether it’s spiking a ball or setting up a play, I love the excitement and the team bonding that this sport offers.
 
+![Volleyball picture](https://github.com/user-attachments/assets/3f1cbf95-b6a7-4622-bf5f-685c6b6312ab)
+
 ### Debate
 
 Debate has been an integral part of my high school experience, helping me develop critical thinking and public speaking skills. Engaging in debates has sharpened my ability to articulate ideas and understand diverse perspectives. It’s not just about arguing; it’s about fostering dialogue and finding common ground.
+
+![Debate team picture](https://files.catbox.moe/ja90r6.jpg)
 
 ## Some of my Favorite Activities
 
