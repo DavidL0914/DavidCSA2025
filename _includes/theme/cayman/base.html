@@ -9,6 +9,16 @@
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}"> {% include head-custom.html %}
+    <style>
+        .key {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('https://www.freeiconspng.com/thumbs/key-png/key-png-11.png') no-repeat center center;
+            background-size: cover;
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -57,7 +67,7 @@
 
     <main id="content" class="main-content" role="main">
         {{ content }}
-
+        <div class="key" id="key"></div>
         <footer class="site-footer">
             {% if site.github.is_project_page %}
             <span class="site-footer-owner"><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.</span> {% endif %}
@@ -66,76 +76,46 @@
     </main>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        // Function to generate a random color
-        function getRandomColor() {
-          const letters = '0123456789ABCDEF';
-          let color = '#';
-          for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-          }
-          return color;
-        }
-      
-        // Array of messages to display
-        const messages = ['Blub Blub', 'Glub Glub', 'Splash Splash', 'Swish Swish'];
-      
-        // Function to get a random message from the array
-        function getRandomMessage() {
-          return messages[Math.floor(Math.random() * messages.length)];
-        }
-      
-        // Function to create and animate floating text
-        function createFloatingText(x, y) {
-          // Get the container for floating text
-          const container = document.querySelector('.floating-text-container');
-          
-          // Create a new div element for the floating text
-          const text = document.createElement('div');
-          text.className = 'floating-text show'; // Apply CSS class for animation
-          text.innerText = getRandomMessage(); // Set the text to a random message
-          
-          // Position the text based on the mouth's position
-          text.style.left = `${x}px`;
-          text.style.top = `${y}px`;
-          
-          // Append the text element to the container
-          container.appendChild(text);
-          
-          // Remove the text element from the container after animation ends
-          text.addEventListener('animationend', () => {
-            container.removeChild(text);
-          });
-        }
-      
-        // Add click event to all fish elements
-        function addFishClickEvent() {
-          // Select all fish elements
-          const fishElements = document.querySelectorAll('.fish');
-          fishElements.forEach(fish => {
-            fish.addEventListener('click', function() {
-              // Change the background color of the clicked fish
-              this.style.backgroundColor = getRandomColor();
-              
-              // Calculate the position of the fish's mouth
-              const rect = this.getBoundingClientRect();
-              const mouthElement = this.querySelector('span:nth-child(3)');
-              const mouthRect = mouthElement.getBoundingClientRect();
-              
-              // Calculate the position for the floating text
-              const x = mouthRect.left - rect.left + (mouthRect.width / 2);
-              const y = mouthRect.top - rect.top + (mouthRect.height / 2);
-              
-              // Create and animate floating text
-              createFloatingText(x, y);
-            });
-          });
-        }
-      
-        // Initialize click events on fish elements
-        addFishClickEvent();
-      });
+        document.addEventListener("DOMContentLoaded", function() {
+            const keyElement = document.getElementById('key');
+            
+            function showKey(x, y) {
+                keyElement.style.left = `${x}px`;
+                keyElement.style.top = `${y}px`;
+                keyElement.style.display = 'block';
+            }
+
+            function addFishClickEvent() {
+                const fishElements = document.querySelectorAll('.fish');
+                fishElements.forEach(fish => {
+                    fish.addEventListener('click', function() {
+                        this.style.backgroundColor = getRandomColor();
+                        
+                        const rect = this.getBoundingClientRect();
+                        const mouthElement = this.querySelector('span:nth-child(3)');
+                        const mouthRect = mouthElement.getBoundingClientRect();
+                        
+                        const x = mouthRect.left - rect.left + (mouthRect.width / 2);
+                        const y = mouthRect.top - rect.top + (mouthRect.height / 2);
+                        
+                        showKey(x, y);
+                    });
+                });
+            }
+
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            addFishClickEvent();
+        });
     </script>
 
 </body>
+
 </html>
