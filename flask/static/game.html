@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script>
+        let shipImg, bulletImg, asteroidImg;
+        let ship;
+        let bullets = [];
+        let asteroids = [];
+        let score = 0;
+        let ammo = 10;
+        let maxAmmo = 10;
+        let ammoReg = 10.0;
+        let gameTime = 0;
+
+        function preload() {
+            // Load local images
+            shipImg = loadImage('images/ship.png'); // Ensure this path is correct
+            bulletImg = loadImage('images/bullet.png'); // Ensure this path is correct
+            asteroidImg = loadImage('images/asteroid.png'); // Ensure this path is correct
+        }
+
+        function setup() {
+            createCanvas(800, 600);
+            ship = new Ship(width / 2, height / 2);
+        }
+
+        function draw() {
+            background(0);
+            ship.update(mouseX, mouseY);
+            ship.draw();
+
+            // Handle bullets
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                bullets[i].move();
+                if (bullets[i].isOffScreen()) {
+                    bullets.splice(i, 1);
+                } else {
+                    bullets[i].draw();
+                }
+            }
+
+            // Handle asteroids
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                asteroids[i].move();
+                if (ship.collidesWith(asteroids[i])) {
+                    gameOver();
+                }
+                for (let j = bullets.length - 1; j >= 0; j--) {
+                    if (asteroids[i].collidesWith(bullets[j])) {
+                        score += 10;
+                        bullets.splice(j, 1);
+                        asteroids.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+
+            // Ammo regeneration
+            if (ammo < maxAmmo) {
+                ammoReg += 0.02;
+                if (ammoReg > ammo) {
+                    ammo = int(ammoReg);
+                }
+            }
+
+            // Draw score
+            fill(255);
+            textSize(24);
+            text(`Score: ${score}`, width - 150, 30);
+        }
+
+        class Ship {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.angle = 0;
+            }
+
+            update(mx, my) {
+                let relX = mx - this.x;
+                let relY = my - this.y;
+                this.angle = -Math.atan2(relY, relX) - Math.PI / 2;
+            }
+
+            draw() {
+                push();
+                translate(this.x, this.y);
+                rotate(this.angle);
+                imageMode(CENTER);
+                image(shipImg, 0, 0, 50, 50); // Adjust dimensions if needed
+                pop();
+            }
+
+            collidesWith(asteroid) {
+                let d = dist(this.x, this.y, asteroid.x, asteroid.y);
+                return d < 25 + asteroid.size / 2;
+            }
+        }
+
+        class Bullet {
+            constructor(x, y, dx, dy) {
+                this.x = x;
+                this.y = y;
+                this.dx = dx;
+                this.dy = dy;
+            }
+
+            move() {
+                this.x += this.dx;
+                this.y += this.dy;
+            }
+
+            draw() {
+                imageMode(CENTER);
+                image(bulletImg, this.x, this.y, 10, 10); // Adjust dimensions if needed
+            }
+
+            isOffScreen() {
+                return this.x < 0 || this.x > width || this.y < 0 || this.y > height;
+            }
+        }
+
+        class Asteroid {
+            constructor(x, y, size, dx, dy) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.dx = dx;
+                this.dy = dy;
+            }
+
+            move() {
+                this.x += this.dx;
+                this.y += this.dy;
+            }
+
+            draw() {
+                imageMode(CENTER);
+                image(asteroidImg, this.x, this.y, this.size, this.size); // Adjust dimensions if needed
+            }
+
+            collidesWith(bullet) {
+                let d = dist(this.x, this.y, bullet.x, bullet.y);
+                return d < this.size / 2 + 5;
+            }
+        }
+
+        function gameOver() {
+            noLoop();
+            alert('Game Over');
+        }
+    </script>
+</body>
+</html>
