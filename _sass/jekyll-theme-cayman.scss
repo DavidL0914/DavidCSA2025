@@ -64,6 +64,7 @@ a {
 .btn {
   display: inline-block;
   margin-bottom: 1rem;
+  margin-left: 15px;
   color: #000; /* Dark text color on hover */
   background-color: #fdd835; /* Slightly darker yellow on hover */
   border-color: #fdd835;
@@ -505,4 +506,58 @@ a {
 .fish:focus {
   outline: none; /* Remove focus outline */
   box-shadow: none; /* Remove any focus-related shadows */
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-button {
+  background-color: #00f5ff;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.dropdown {
+  position: relative; 
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  bottom: 100%; 
+  left: 0; 
+  background-color: #f9f9f9;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 5px;
+  margin-bottom: 2px; 
+  overflow-y: auto; 
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 8px 12px;
+  text-decoration: none;
+  display: block;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropdown-button {
+  background-color: #00aaff;
 }
